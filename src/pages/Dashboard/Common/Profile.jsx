@@ -1,9 +1,16 @@
 import useAuth from '../../../hooks/useAuth'
 import { Helmet } from 'react-helmet-async'
 import coverImg from '../../../assets/images/cover.jpg'
+import useRole from '../../../hooks/useRole'
+import LoadingSpinner from '../../../components/Shared/LoadingSpinner'
 const Profile = () => {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
 
+  const [role, isLoading] = useRole()
+
+
+  if(loading || isLoading) return <LoadingSpinner></LoadingSpinner>
+  console.log(role)
   console.log(user)
   return (
     <div className='flex justify-center items-center h-screen'>
@@ -20,13 +27,14 @@ const Profile = () => {
           <a href='#' className='relative block'>
             <img
               alt='profile'
+              referrerPolicy='no-referrer'
               src={user.photoURL}
               className='mx-auto object-cover rounded-full h-24 w-24  border-2 border-white '
             />
           </a>
 
-          <p className='p-2 px-4 text-xs text-white bg-lime-500 rounded-full'>
-            Customer
+          <p className='p-2 px-4 text-xs text-white bg-lime-500 rounded-full capitalize'>
+            {role}
           </p>
           <p className='mt-2 text-xl font-medium text-gray-800 '>
             User Id: {user.uid}

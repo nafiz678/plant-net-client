@@ -12,9 +12,12 @@ import { Link } from 'react-router-dom'
 import SellerMenu from './Menu/SellerMenu'
 import CustomerMenu from './Menu/CustomerMenu'
 import logo from '../../../assets/images/logo-flat.png'
+import useRole from '../../../hooks/useRole'
 const Sidebar = () => {
-  const { logOut } = useAuth()
+  const { user, loading, logOut } = useAuth()
   const [isActive, setActive] = useState(false)
+  const [role, isLoading] = useRole()
+
 
   // Sidebar Responsive Handler
   const handleToggle = () => {
@@ -71,15 +74,10 @@ const Sidebar = () => {
           <div className='flex flex-col justify-between flex-1 mt-6'>
             <nav>
               {/*  Menu Items */}
-              <CustomerMenu />
-              <SellerMenu />
-
-              <MenuItem
-                icon={BsGraphUp}
-                label='Statistics'
-                address='/dashboard'
-              />
-              <AdminMenu />
+              {role === "customer" && <CustomerMenu />}
+              {role === "seller" &&<SellerMenu />}
+              {role === "admin" && <AdminMenu />}
+              
             </nav>
           </div>
         </div>
