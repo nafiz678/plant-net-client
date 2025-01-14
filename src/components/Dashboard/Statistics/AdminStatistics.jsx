@@ -1,12 +1,32 @@
 import { Calendar } from 'react-date-range'
 import { FaUserAlt, FaDollarSign } from 'react-icons/fa'
 import { BsFillCartPlusFill, BsFillHouseDoorFill } from 'react-icons/bs'
+import { useQuery } from '@tanstack/react-query'
+import useAxiosSecure from '../../../hooks/useAxiosSecure'
+import LoadingSpinner from '../../Shared/LoadingSpinner'
+import Example from './Chart'
 
 const AdminStatistics = () => {
+  const axiosSecure = useAxiosSecure()
+
+  // fetch stat data from server
+  const {data: statData, isLoading} = useQuery({
+    queryKey: ["admin-stat"],
+    queryFn: async()=>{
+      const {data} = await axiosSecure.get("/admin-stat")
+      return data
+    }
+  })
+
+  if(isLoading) return <LoadingSpinner></LoadingSpinner>
+
+  const {totalUser, totalPlants, totalRevenue, totalOrder} = statData
+  console.log(statData)
   return (
     <div>
       <div className='mt-12'>
         {/* small cards */}
+
         <div className='mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 flex-grow'>
           {/* Sales Card */}
           <div className='relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md'>
@@ -20,10 +40,11 @@ const AdminStatistics = () => {
                 Total Revenue
               </p>
               <h4 className='block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900'>
-                $120
+                ${statData[0].totalRevenue}
               </h4>
             </div>
           </div>
+
           {/* Total Orders */}
           <div className='relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md'>
             <div
@@ -36,10 +57,11 @@ const AdminStatistics = () => {
                 Total Orders
               </p>
               <h4 className='block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900'>
-                120
+                {statData[0].totalOrder}
               </h4>
             </div>
           </div>
+
           {/* Total Plants */}
           <div className='relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md'>
             <div
@@ -52,10 +74,11 @@ const AdminStatistics = () => {
                 Total Plants
               </p>
               <h4 className='block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900'>
-                120
+                {totalPlants}
               </h4>
             </div>
           </div>
+
           {/* Users Card */}
           <div className='relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md'>
             <div
@@ -68,7 +91,7 @@ const AdminStatistics = () => {
                 Total User
               </p>
               <h4 className='block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-blue-gray-900'>
-                10
+                {totalUser}
               </h4>
             </div>
           </div>
@@ -78,6 +101,7 @@ const AdminStatistics = () => {
           {/*Sales Bar Chart */}
           <div className='relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden xl:col-span-2'>
             {/* Chart goes here.. */}
+            <Example></Example>
           </div>
           {/* Calender */}
           <div className=' relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md overflow-hidden'>
